@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile-backend
+    depends_on:
+      - postgres
+      - redis
+    command: uvicorn app.main:app --host 0.0.0.0
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_DSN: postgresql://postgres:postgres@postgres:5432/database
+      REDIS_DSN: redis://redis:6379/0
+  postgres:
+    build:
+      dockerfile: Dockerfile-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: database
+  redis:
+    image: redis:7
